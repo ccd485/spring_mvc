@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- student -->
+	<bean name="/student_index.do" class="student.controller.StudentIndexController"></bean>
+	<bean name="/student_list.do" class="student.controller.StudentListController">
+		<property name="studentDAO" ref="studentDAO"/>
+	</bean>
+	<bean name="/student_insert.do" class="student.controller.StudentInsertCommandController">
+		<property name="commandClass" value="student.dto.StudentDTO"/>
+		<property name="commandName" value="studentCmd"/>
+		<property name="studentDAO" ref="studentDAO"/>
+	</bean>
+	<bean name="/student_delete.do" class="student.controller.StudentDeleteController">
+		<property name="studentDAO" ref="studentDAO"/>
+	</bean>
+	<bean name="/student_find.do" class="student.controller.StudentFindController">
+		<property name="studentDAO" ref="studentDAO"/>
+	</bean>
+	<!-- member -->
+	<bean name="/member_index.do" class="member.controller.MemberIndexController"></bean>
+	<bean name="/member_isMember.do" class="member.controller.MemberIsMemberController"></bean>
+	<bean name="/member_check.do" class="member.controller.MemberCheckController">
+		<property name="memberDAO" ref="memberDAO"/>
+	</bean>
+	<bean name="/member_input.do" class="member.controller.MemberInputCommandController">
+		<property name="commandClass" value="member.dto.MemberDTO"/>
+		<property name="commandName" value="memberCmd"/>
+		<property name="memberDAO" ref="memberDAO"/>
+	</bean>
+	<bean name="/member_list.do" class="member.controller.MemberListController">
+		<property name="memberDAO" ref="memberDAO"/>
+	</bean>
+	<bean name="/member_delete.do" class="member.controller.MemberDeleteController">
+		<property name="memberDAO" ref="memberDAO"/>
+	</bean>
+	<bean name="/member_update.do" class="member.controller.MemberUpdateController">
+		<property name="memberDAO" ref="memberDAO"/>
+	</bean>
+	<bean name="/member_update_ok.do" class="member.controller.MemberUpdateOkCommandController">
+		<property name="commandClass" value="member.dto.MemberDTO"/>
+		<property name="commandName" value="memberCmd"/>
+		<property name="memberDAO" ref="memberDAO"/>
+	</bean>
+	<!-- 외부DI -->
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+      <property name="prefix">
+         <value>WEB-INF/jsp/</value>
+      </property>
+      <property name="suffix">
+         <value>.jsp</value>
+      </property>
+   </bean>
+   
+   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName">
+			<value>oracle.jdbc.driver.OracleDriver</value>
+		</property>
+	
+		<property name="url">
+			<value>jdbc:oracle:thin:@127.0.0.1:1521:XE</value>
+		</property>
+		
+		<property name="username" value="bigdata3"/>
+		<property name="password" value="bigdata3"/>
+	</bean>
+   <!--<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+      <property name="jndiName">
+         <value>jdbc/oracle</value>
+      </property>
+      <property name="resourceRef" value="true"></property>
+   </bean> -->
+   
+   <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+      <property name="dataSource" ref="dataSource"/>
+   </bean>
+   
+   <bean id="studentDAO" class="student.dao.StudentDAOImpl">
+      <property name="jdbcTemplate" ref="jdbcTemplate"/>
+   </bean>
+   <bean id="memberDAO" class="member.dao.MemberDAOImpl">
+      <property name="jdbcTemplate" ref="jdbcTemplate"/>
+   </bean>
+</beans>
